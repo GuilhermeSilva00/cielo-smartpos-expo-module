@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "cielo-smartpos-expo-module": ["../src/index"],
+      "cielo-smartpos-expo-module/*": ["../src/*"]
+    }
+  }
+}

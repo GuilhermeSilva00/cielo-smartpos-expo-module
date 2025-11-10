@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android", "web"],
+  "apple": {
+    "modules": ["CieloSmartposExpoModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.cielosmartposexpomodule.CieloSmartposExpoModule"]
+  }
+}
