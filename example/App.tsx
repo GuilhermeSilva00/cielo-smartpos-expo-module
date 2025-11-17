@@ -1,40 +1,165 @@
-import { useEvent } from 'expo';
-import CieloSmartposExpoModule, { CieloSmartposExpoModuleView } from 'cielo-smartpos-expo-module';
-import { Button, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import React from 'react';
+import { Alert, Button, ScrollView, Text, View } from 'react-native';
+import handlePayment from './CieloModule/handlePayment';
+import handleCancel from './CieloModule/handleCancel';
+import handleTextprint from './CieloModule/handleTextPrint';
+import handleBitmapPrint from './CieloModule/handleBitmapPrint';
+import { getSerialNumber as getSerial } from './CieloModule/getSerialnumber';
+import { PaymentResponse, PaymentCode, OperationPrintType } from 'cielo-smartpos-expo-module';
+import * as MediaLibrary from 'expo-media-library';
 
 export default function App() {
-  const onChangePayload = useEvent(CieloSmartposExpoModule, 'onChange');
+
+  const [lastSale, setLastSale] = React.useState<PaymentResponse | null>(null);
+
+  const [, requestPermission] = MediaLibrary.usePermissions();
+
+  async function doPayment() {
+    const json = {
+      accessToken: 'CvYJ5hGSimUhOcXcqONl9P6fO7nPn3qvGFoqO0LRDwjKHS9oOL / DwbkDkxRUrNjsBE3q2tQcOJIZCbik8e6VUWB5yx0W1UBRJ2XaQ',
+      clientID: 'KXGuEl1Ff4DwMBk3wG7lBGgf6GjDlULAhLoac3tLbZXkOX6jW7',
+      email: 'guiluis.silva00@gmail,com',
+      installments: 0,
+      items: [
+        {
+          name: 'Geral',
+          quantity: 1,
+          sku: '10',
+          unitOfMeasure: 'unidade',
+          unitPrice: 10,
+        },
+      ],
+      paymentCode: 'DEBITO_AVISTA' as PaymentCode,
+      value: '10',
+    }
+
+    try {
+      const result = await handlePayment(json)
+      const formatedResult: PaymentResponse = JSON.parse(result.result)
+      console.log("result: ", formatedResult)
+      setLastSale(formatedResult)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function doCancel() {
+
+    if(!lastSale){
+      return Alert.alert('Ops', 'É necessário realizar uma venda', [
+        {
+          text: 'Cancel',
+          onPress: () => {},
+          style: 'cancel',
+        },
+        {text: 'OK', onPress: () => {}},
+      ]);
+    }
+
+    if(lastSale.status === "CANCELED") {
+      return Alert.alert('Ops', 'É necessário que a última venda não seja um cancelamento', [
+        {
+          text: 'Cancel',
+          onPress: () => {},
+          style: 'cancel',
+        },
+        {text: 'OK', onPress: () => {}},
+      ]);
+    }
+
+    const json = {
+      id: lastSale.id,
+      clientID: 'KXGuEl1Ff4DwMBk3wG7lBGgf6GjDlULAhLoac3tLbZXkOX6jW7',
+      accessToken: 'CvYJ5hGSimUhOcXcqONl9P6fO7nPn3qvGFoqO0LRDwjKHS9oOL / DwbkDkxRUrNjsBE3q2tQcOJIZCbik8e6VUWB5yx0W1UBRJ2XaQ',
+      cieloCode: lastSale.payments[0].cieloCode,
+      authCode: lastSale.payments[0].authCode,
+      value: lastSale.payments[0].amount
+    }
+
+    try {
+      const result = await handleCancel(json)
+      const formatedResult: PaymentResponse = JSON.parse(result.result)
+      console.log("result: ", formatedResult)
+      setLastSale(formatedResult)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function doTextPrint() {
+    const json = {
+      operation: "PRINT_TEXT" as OperationPrintType,
+      styles: [{}],
+      value: ["TEXTO PARA IMPRIMIR NA PRIMEIRA LINHA\nTEXTO PARA IMPRIMIR NA SEGUNDA LINHA\nTEXTO PARA IMPRIMIR NA TERCEIRA LINHA\n\n"]
+    }
+
+    try {
+      const result = await handleTextprint(json)
+      console.log("result: ", JSON.parse(result.result))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function doBitmapPrint() {
+    const res = await requestPermission();
+    if(res.granted) {
+      const json = {
+        operation: "PRINT_IMAGE" as OperationPrintType,
+        styles: [{}],
+        value: ["iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="]
+      }
+
+      try {
+        const result = await handleBitmapPrint(json)
+        console.log("result: ", result)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
+  function getSerialNumber() {
+    const serial = getSerial();
+    console.log('Serial Number: ', serial);
+    return serial;
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ScrollView style={styles.container}>
-        <Text style={styles.header}>Module API Example</Text>
-        <Group name="Constants">
-          <Text>{CieloSmartposExpoModule.PI}</Text>
-        </Group>
-        <Group name="Functions">
-          <Text>{CieloSmartposExpoModule.hello()}</Text>
-        </Group>
-        <Group name="Async functions">
+        <Text style={styles.header}>CIELO SMARTPOS</Text>
+        <Group name="CIELO">
           <Button
-            title="Set value"
-            onPress={async () => {
-              await CieloSmartposExpoModule.setValueAsync('Hello from JS!');
-            }}
+            title="Pagamento"
+            onPress={doPayment}
+          />
+          <Button
+            title="Cancelamento"
+            onPress={doCancel}
+          />
+          <Button
+            title="Impressão texto"
+            onPress={doTextPrint}
+          />
+          <Button
+            title="Impressão imagem(bitmap)"
+            onPress={doBitmapPrint}
+          />
+          <Button
+            title="SERIAL DO TERMINAL"
+            onPress={getSerialNumber}
           />
         </Group>
-        <Group name="Events">
-          <Text>{onChangePayload?.value}</Text>
-        </Group>
-        <Group name="Views">
-          <CieloSmartposExpoModuleView
-            url="https://www.example.com"
-            onLoad={({ nativeEvent: { url } }) => console.log(`Loaded: ${url}`)}
-            style={styles.view}
-          />
-        </Group>
+        {
+          lastSale && (
+            <Group name="RESULTADO">
+              <Text>{JSON.stringify(lastSale)}</Text>
+            </Group>
+          )
+        }
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -61,6 +186,7 @@ const styles = {
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 20,
+    rowGap: 10
   },
   container: {
     flex: 1,
