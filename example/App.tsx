@@ -14,7 +14,7 @@ export default function App() {
 
   const [, requestPermission] = MediaLibrary.usePermissions();
 
-  async function doPayment() {
+  async function handleDoAsyncPayment() {
     const json = {
       accessToken: 'CvYJ5hGSimUhOcXcqONl9P6fO7nPn3qvGFoqO0LRDwjKHS9oOL / DwbkDkxRUrNjsBE3q2tQcOJIZCbik8e6VUWB5yx0W1UBRJ2XaQ',
       clientID: 'KXGuEl1Ff4DwMBk3wG7lBGgf6GjDlULAhLoac3tLbZXkOX6jW7',
@@ -43,7 +43,7 @@ export default function App() {
     }
   }
 
-  async function doCancel() {
+  async function handleDoAsyncVoidPayment() {
 
     if(!lastSale){
       return Alert.alert('Ops', 'É necessário realizar uma venda', [
@@ -86,7 +86,7 @@ export default function App() {
     }
   }
 
-  async function doTextPrint() {
+  async function handleDoAsyncPrintText() {
     const json = {
       operation: "PRINT_TEXT" as OperationPrintType,
       styles: [{}],
@@ -101,7 +101,7 @@ export default function App() {
     }
   }
 
-  async function doBitmapPrint() {
+  async function handleDoAsyncPrintBitmap() {
     const res = await requestPermission();
     if(res.granted) {
       const json = {
@@ -132,19 +132,19 @@ export default function App() {
         <Group name="CIELO">
           <Button
             title="Pagamento"
-            onPress={doPayment}
+            onPress={handleDoAsyncPayment}
           />
           <Button
             title="Cancelamento"
-            onPress={doCancel}
+            onPress={handleDoAsyncVoidPayment}
           />
           <Button
             title="Impressão texto"
-            onPress={doTextPrint}
+            onPress={handleDoAsyncPrintText}
           />
           <Button
             title="Impressão imagem(bitmap)"
-            onPress={doBitmapPrint}
+            onPress={handleDoAsyncPrintBitmap}
           />
           <Button
             title="SERIAL DO TERMINAL"
