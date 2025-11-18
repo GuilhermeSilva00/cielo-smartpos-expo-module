@@ -12,10 +12,10 @@ npm i cielo-smartpos-expo-module
 
 ```typescript
 import {
-  handlePayment,
-  handleCancel,
-  handleTextPrint,
-  handleBitmapPrint,
+  doAsyncPayment,
+  doAsyncVoidPayment,
+  doAsyncPrintText,
+  doAsyncPrintBitmap,
   getSerialNumber,
   CieloSmartposExpoModule,
 } from "cielo-smartpos-expo-module";
@@ -27,16 +27,16 @@ import {
 
 ### 🔧 Functions
 
-**handlePayment:**
+**doAsyncPayment:**
 Starts a payment operation.
 
-**handleCancel:**
+**doAsyncVoidPayment:**
 Performs a void (cancellation) of a previous payment.
 
-**handleTextPrint:**
+**doAsyncPrintText:**
 Starts a text print
 
-**handleBitmapPrint:**
+**doAsyncPrintBitmap:**
 Starts a image print
 
 **getSerialNumber:**

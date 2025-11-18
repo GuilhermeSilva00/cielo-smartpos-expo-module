@@ -3,10 +3,10 @@ import { NativeModule, requireNativeModule } from 'expo';
 import { CieloResponse } from './CieloSmartposExpoModule.types';
 
 declare class CieloSmartposExpoModule extends NativeModule {
-  handlePayment(json: string): Promise<CieloResponse>;
-  handleCancel(json: string): Promise<CieloResponse>
-  handleTextPrint(json: string): Promise<CieloResponse>
-  handleBitmapPrint(json: string): Promise<CieloResponse>
+  doAsyncPayment(json: string): Promise<CieloResponse>;
+  doAsyncVoidPayment(json: string): Promise<CieloResponse>
+  doAsyncPrintText(json: string): Promise<CieloResponse>
+  doAsyncPrintBitmap(json: string): Promise<CieloResponse>
   getSerialNumber(): string;
 }
 

@@ -30,28 +30,28 @@ class CieloSmartposExpoModule : Module() {
       }
     }
 
-    AsyncFunction("handlePayment") { json: String, promise: Promise ->
+    AsyncFunction("doAsyncPayment") { json: String, promise: Promise ->
       val activity = appContext.currentActivity
         ?: return@AsyncFunction promise.reject("5000", "Activity não encontrada", null)
 
       PaymentHandler.startPayment(activity, json, promise)
     }
 
-    AsyncFunction("handleCancel") { json: String, promise: Promise ->
+    AsyncFunction("doAsyncVoidPayment") { json: String, promise: Promise ->
       val activity = appContext.currentActivity
         ?: return@AsyncFunction promise.reject("5000", "Activity não encontrada", null)
 
       CancelHandler.startCancel(activity, json, promise)
     }
 
-    AsyncFunction("handleTextPrint") { json: String, promise: Promise ->
+    AsyncFunction("doAsyncPrintText") { json: String, promise: Promise ->
       val activity = appContext.currentActivity
         ?: return@AsyncFunction promise.reject("5000", "Activity não encontrada", null)
 
       PrintHandler.startTextPrint(activity, json, promise)
     }
 
-    AsyncFunction("handleBitmapPrint") { json: String, promise: Promise ->
+    AsyncFunction("doAsyncPrintBitmap") { json: String, promise: Promise ->
       val activity = appContext.currentActivity
         ?: return@AsyncFunction promise.reject("5000", "Activity não encontrada", null)
 

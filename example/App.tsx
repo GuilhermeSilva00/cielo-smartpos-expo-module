@@ -1,9 +1,9 @@
 import React from 'react';
 import { Alert, Button, ScrollView, Text, View } from 'react-native';
-import handlePayment from './CieloModule/handlePayment';
-import handleCancel from './CieloModule/handleCancel';
-import handleTextprint from './CieloModule/handleTextPrint';
-import handleBitmapPrint from './CieloModule/handleBitmapPrint';
+import doAsyncPayment from './CieloModule/doAsyncPayment';
+import doAsyncVoidPayment from './CieloModule/doAsyncVoidPayment';
+import doAsyncPrintText from './CieloModule/doAsyncPrintText';
+import doAsyncPrintBitmap from './CieloModule/doAsyncPrintBitmap';
 import { getSerialNumber as getSerial } from './CieloModule/getSerialnumber';
 import { PaymentResponse, PaymentCode, OperationPrintType } from 'cielo-smartpos-expo-module';
 import * as MediaLibrary from 'expo-media-library';
@@ -34,7 +34,7 @@ export default function App() {
     }
 
     try {
-      const result = await handlePayment(json)
+      const result = await doAsyncPayment(json)
       const formatedResult: PaymentResponse = JSON.parse(result.result)
       console.log("result: ", formatedResult)
       setLastSale(formatedResult)
@@ -77,7 +77,7 @@ export default function App() {
     }
 
     try {
-      const result = await handleCancel(json)
+      const result = await doAsyncVoidPayment(json)
       const formatedResult: PaymentResponse = JSON.parse(result.result)
       console.log("result: ", formatedResult)
       setLastSale(formatedResult)
@@ -94,7 +94,7 @@ export default function App() {
     }
 
     try {
-      const result = await handleTextprint(json)
+      const result = await doAsyncPrintText(json)
       console.log("result: ", JSON.parse(result.result))
     } catch (error) {
       console.log(error)
@@ -111,7 +111,7 @@ export default function App() {
       }
 
       try {
-        const result = await handleBitmapPrint(json)
+        const result = await doAsyncPrintBitmap(json)
         console.log("result: ", result)
       } catch (error) {
         console.log(error)
