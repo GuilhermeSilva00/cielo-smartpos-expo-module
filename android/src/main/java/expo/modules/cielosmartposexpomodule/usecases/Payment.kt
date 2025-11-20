@@ -20,12 +20,14 @@ object PaymentHandler {
 
       val schema = activity.getString(R.string.schema_return)
       println("schema-app: $schema")
+      val callback = activity.getString(R.string.callback_payment)
+      println("callback-app: $callback")
 
       val uri = Uri.Builder()
         .scheme("lio")
         .authority("payment")
         .appendQueryParameter("request", base64)
-        .appendQueryParameter("urlCallback", "$schema://payment")
+        .appendQueryParameter("urlCallback", "$schema://$callback")
         .build()
 
       val intent = Intent(Intent.ACTION_VIEW).apply {

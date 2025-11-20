@@ -19,12 +19,13 @@ object CancelHandler {
       val base64 = Base64.encodeToString(json.toByteArray(), Base64.NO_WRAP)
 
       val schema = activity.getString(R.string.schema_return)
+      val callback = activity.getString(R.string.callback_payment_reversal)
 
       val uri = Uri.Builder()
         .scheme("lio")
         .authority("payment-reversal")
         .appendQueryParameter("request", base64)
-        .appendQueryParameter("urlCallback", "$schema://payment-reversal")
+        .appendQueryParameter("urlCallback", "$schema://$callback")
         .build()
 
       val intent = Intent(Intent.ACTION_VIEW).apply {
