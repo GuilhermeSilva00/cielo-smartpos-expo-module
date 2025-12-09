@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">cielo-smartpos-expo-module-example</string>
+  <string name="expo_splash_screen_resize_mode" translatable="false">contain</string>
+  <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
+  <string name="schema_return">cielo-smartpos-expo-module</string>
+
+  <string name="callback_payment">payment</string>
+  <string name="callback_payment_reversal">payment-reversal</string>
+  <string name="callback_print">print</string>
+</resources>
